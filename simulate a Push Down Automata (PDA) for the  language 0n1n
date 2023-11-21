@@ -1,0 +1,105 @@
+#include
+ 
+<stdio.h>
+
+#include
+ 
+<stdlib.h>
+
+#include
+ 
+<string.h>
+
+
+typedef
+ 
+struct
+ 
+StackNode {
+
+  
+char data;
+  struct
+ 
+StackNode *next;
+} StackNode;
+
+typedef
+ 
+struct
+ 
+Stack {
+  StackNode *top;
+} Stack;
+
+void push(Stack *stack, char data) {
+  StackNode *newNode = malloc(sizeof(StackNode));
+  newNode->data = data;
+  newNode->next = stack->top;
+  stack->top = newNode;
+}
+
+char pop(Stack *stack) {
+  if (stack->top == NULL) {
+    return '\0';
+  }
+
+  char data = stack->top->data;
+  StackNode *temp = stack->top;
+  stack->top = stack->top->next;
+  free(temp);
+
+  return data;
+}
+
+int isStackEmpty(Stack *stack) {
+  return stack->top == NULL;
+}
+
+int simulatePDA(char *input) {
+  Stack stack;
+  stack.top = NULL;
+
+  int i = 0;
+  while (input[i] != '\0') {
+    char currentChar = input[i];
+
+    if (currentChar == '0') {
+      push(&stack, currentChar);
+    } else if (currentChar == '1') {
+      if (isStackEmpty(&stack)) {
+        return 0;
+      }
+
+      char poppedChar = pop(&stack);
+      if (poppedChar != '0') {
+        return 0;
+      }
+    } else {
+      return 0;
+    }
+
+    i++;
+  }
+
+  if (isStackEmpty(&stack)) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+int main() {
+  char input[100];
+  printf("Enter the input string: ");
+  scanf("%s", input);
+
+  int result = simulatePDA(input);
+  if (result) {
+    printf("The string is accepted.\n");
+  } else {
+    printf("The string is not accepted.\n");
+  }
+
+  return 0;
+}
